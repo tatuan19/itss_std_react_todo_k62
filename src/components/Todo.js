@@ -27,6 +27,7 @@ function Todo() {
   //   /* テストコード 終了 */
   // ]);
 
+  const [filter, setFilter] = useState('ALL');
   const [items, putItems, clearItems] = useStorage();
 
   const handleCheck = (changedItem, isCheck) => {
@@ -45,17 +46,26 @@ function Todo() {
     putItems([...items, { key: getKey(), text: text, done: false }]);
   }
 
+  const handleFilterChange = (value) => {setFilter(value)};
+
+  const displayItems = items.filter(item => {
+    if (filter === 'ALL') return true;
+    if (filter === 'TODO' && !item.done) return true;
+    if (filter === 'DONE' && item.done) return true;
+  });
+
   return (
     <div className="panel">
       <div className="panel-heading">
         ITSS ToDoアプリ
       </div>
       <Input addTodo={handleAdd} />
-      {items.map(item => (
+      <Filter value={filter} onChange={handleFilterChange}/>
+      {displayItems.map(item => (
         <TodoItem key={item.key} item={item} onCheck={handleCheck} />
       ))}
       <div className="panel-block">
-        {items.length} items
+        {displayItems.length} items
       </div>
       <div className="panel-block">
         <button className="button is-light is-fullwidth" onClick={clearItems}>
