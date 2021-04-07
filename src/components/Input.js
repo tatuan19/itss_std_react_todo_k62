@@ -18,7 +18,7 @@ function Input( {addTodo} ) {
   }
   return (
     <div className="panel-block">
-      <input className="input" type="text" placeholder="Enter new todo" value={text}
+      <input className="input" type="text" placeholder="Todoを入力してください" value={text}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
       />
