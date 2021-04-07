@@ -29,10 +29,12 @@ function Todo() {
 
   const [items, putItems, clearItems] = useStorage();
 
-  const handleCheck = (changedItem, checked) => {
-    const newItem = items.map(item=> {
-      if (item.key === changedItem.key)
-        item.done = checked;
+  const handleCheck = (changedItem, isCheck) => {
+    const newItem = items.map(item => {
+      if (item.key === changedItem.key) {
+        console.log(isCheck);
+        item.done = isCheck;
+      }
       return item;
     });
     putItems(newItem);
@@ -40,7 +42,7 @@ function Todo() {
 
   // Day la cho dinh nghia cau truc cho mot item trong items (~trong state)
   const handleAdd = (text) => {
-    putItems([...items, {key: getKey, text: text, done: false}]);
+    putItems([...items, { key: getKey(), text: text, done: false }]);
   }
 
   return (
@@ -50,7 +52,7 @@ function Todo() {
       </div>
       <Input addTodo={handleAdd} />
       {items.map(item => (
-        <TodoItem key={item.key} item={item} onCheck={handleCheck}/>
+        <TodoItem key={item.key} item={item} onCheck={handleCheck} />
       ))}
       <div className="panel-block">
         {items.length} items
