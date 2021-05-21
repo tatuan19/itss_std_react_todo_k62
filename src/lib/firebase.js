@@ -30,7 +30,7 @@ export const getFirebaseItems = async () => {
         console.log(err);
         return [];
     }
-}
+};
 
 export const addFirebaseItem = async (item) => {
     try {
@@ -39,7 +39,7 @@ export const addFirebaseItem = async (item) => {
     } catch (err) {
         console.log(err);
     }
-}
+};
 
 export const updateFirebaseItem = async (item, id) => {
     try {
@@ -48,7 +48,7 @@ export const updateFirebaseItem = async (item, id) => {
     } catch (err) {
         console.log(err);
     }
-}
+};
 
 export const clearFirebaseItem = async (item) => {
     const todoRef = db.collection("todos").doc(item.id);
@@ -64,7 +64,7 @@ export const uiConfig = {
     signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     ],
-}
+};
 
 export const storeUserInfo = async (user) => {
     const { uid } = user;
@@ -81,4 +81,27 @@ export const storeUserInfo = async (user) => {
             ...userDoc.data(),
         };
     }
-}
+};
+
+export const updateUser = async (user, image) => {
+    try {
+        const userDoc = await firebase.firestore().collection("users").doc(user.id).get();
+        if (userDoc.exists) {
+            await firebase.firestore().collection("users").doc(user.id).update({ ...userDoc.data(), image: image });
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const uploadImage = async (image) => {
+    const ref = firebase.storage().ref().child(`/images/${image.name}`);
+    let downloadUrl = "";
+    try {
+        await ref.put(image);
+        downloadUrl = await ref.getDownloadURL();
+    } catch (err) {
+        console.log(err);
+    }
+    return downloadUrl;
+};
