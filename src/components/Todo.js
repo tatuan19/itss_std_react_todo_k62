@@ -13,7 +13,7 @@ import Input from './Input';
 import Filter from './Filter';
 
 /* カスタムフック */
-import useStorage from '../hooks/storage';
+import useFirebaseStorage from '../hooks/firebaseStorage';
 
 /* ライブラリ */
 import { getKey } from "../lib/util";
@@ -28,25 +28,18 @@ function Todo() {
   // ]);
 
   const [filter, setFilter] = useState('ALL');
-  const [items, putItems, clearItems] = useStorage();
+  const [items, addItem, updateItem, clearItems] = useFirebaseStorage();
 
   const handleCheck = (changedItem, isCheck) => {
-    const newItem = items.map(item => {
-      if (item.key === changedItem.key) {
-        console.log(isCheck);
-        item.done = isCheck;
-      }
-      return item;
-    });
-    putItems(newItem);
+    updateItem(changedItem, isCheck);
   };
 
   // Day la cho dinh nghia cau truc cho mot item trong items (~trong state)
   const handleAdd = (text) => {
-    putItems([...items, { key: getKey(), text: text, done: false }]);
+    addItem({ text, done: false });
   }
 
-  const handleFilterChange = (value) => {setFilter(value)};
+  const handleFilterChange = (value) => { setFilter(value) };
 
   const displayItems = items.filter(item => {
     if (filter === 'ALL') return true;
@@ -60,9 +53,9 @@ function Todo() {
         ITSS ToDoアプリ
       </div>
       <Input addTodo={handleAdd} />
-      <Filter value={filter} onChange={handleFilterChange}/>
+      <Filter value={filter} onChange={handleFilterChange} />
       {displayItems.map(item => (
-        <TodoItem key={item.key} item={item} onCheck={handleCheck} />
+        <TodoItem key={item.id} item={item} onCheck={handleCheck} />
       ))}
       <div className="panel-block">
         {displayItems.length} items
